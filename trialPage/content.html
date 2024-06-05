@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iframe Content</title>
+  </head>
+  <body>
+    <h1>Konten Iframe</h1>
+    <p>
+      Klik di mana saja di dalam iframe ini untuk mengirim pesan ke halaman
+      induk.
+    </p>
+
+    <script>
+      // Fungsi untuk mengirim pesan ke halaman induk
+      function sendMessageToParent(message) {
+        window.parent.postMessage(message, window.location.origin);
+      }
+
+      // Tambahkan event listener untuk menangkap klik di dalam iframe
+      document.body.addEventListener("click", function (event) {
+        // Kirim pesan ke halaman induk
+        sendMessageToParent(`${event.target}`);
+      });
+    </script>
+  </body>
+</html>
