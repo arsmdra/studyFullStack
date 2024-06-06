@@ -1,37 +1,37 @@
-* {
-  padding: 0;
-  margin: 0;
+:root {
+  --lebar: 100vw;
 }
-body {
-  overflow: hidden;
+
+* {
+  margin: 0;
+  padding: 0;
 }
 body header {
-  height: 50px;
-  width: 100vw;
   background-color: #d1b190;
-  position: sticky;
-  top: 0;
+  width: var(--lebar);
+  height: 50px;
+  box-sizing: border-box;
   border-bottom: 1px solid black;
 
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: 0 10px;
-  box-sizing: border-box;
 }
 body header .HLeft {
-  height: 35px;
+  flex-grow: 1;
+  height: fit-content;
   display: flex;
   align-items: center;
-  column-gap: 10px;
+  column-gap: 15px;
 }
 body header .HLeft img {
   height: 30px;
-  outline: auto;
-  outline-offset: 3px;
   border-radius: 50%;
+  outline: 3px double black;
+  outline-offset: 2px;
 }
-/* rotaet img================ */
+/* rotate----------------------------- */
 .rotateOpen {
   rotate: -90deg;
   transition: 2s;
@@ -40,155 +40,130 @@ body header .HLeft img {
   rotate: initial;
   transition: 2s;
 }
-/* ========================== */
+/* ----------------------------------- */
 body header .HLeft span {
-  font-size: 30px;
-  font-weight: 300;
+  font-weight: bold;
+  font-size: 25px;
+  letter-spacing: 2px;
 }
 body header .HCenter {
+  flex-grow: 1;
 }
+
 body header .HRight {
-  width: fit-content;
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
+
 body header .HRight .profile {
-  position: relative;
+  display: flex;
+  align-items: center;
 }
 body header .HRight .profile img {
+  border-radius: 50%;
   height: 40px;
   width: 40px;
-  border-radius: 50%;
-  outline: 1px solid blanchedalmond;
+  outline: 1px solid black;
 }
-/* body header .HRight .profile div (muncul dan tidak) */
-.showP {
-  height: 90vh;
-  width: 250px;
-  background-color: rgb(161, 160, 160);
-  position: absolute;
-  top: 35px;
-  right: 35px;
-  border-radius: 10px 0 10px 10px;
-  outline: 2px solid black;
-  padding: 5px;
-}
-.closeP {
+body header .HRight .profile div {
   display: none;
 }
-/* --------------------------------------------------- */
 body main {
-  display: flex;
-  overflow: hidden;
+  width: var(--lebar);
+  /* height: javascript */
 }
 body main nav {
   background-color: #f8f4e1;
+  height: inherit;
   overflow-y: auto;
   overflow-x: hidden;
-  min-height: inherit;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-/* Open & Close Nav----------------------------- */
+
+/* Nav close&open----------------------------- */
 .navOpen {
   width: 250px;
   transition: 2s;
 }
 .navClose {
-  width: 0%;
+  width: 0;
   transition: 2s;
 }
-/* ----------------------------------------------*/
+/* ----------------------------------- */
 body main nav div {
-  padding: 7px;
 }
 body main nav div section {
-  margin: 10px;
   border-bottom: 1px solid black;
 }
 body main nav div section span {
-  font-weight: bold;
-  letter-spacing: 1px;
+  display: block;
   text-decoration: underline double;
+  font-weight: bold;
+  margin: 4px;
 }
 body main nav div section a {
   display: flex;
   column-gap: 5px;
+  align-items: center;
   text-decoration: none;
   color: inherit;
-  align-items: center;
-  margin: 4px;
-  padding: 4px;
-
-  position: relative;
+  margin: 6px;
+  padding: 2px;
 }
 body main nav div section a:hover {
   background-color: #eed559;
   outline: 1px solid black;
   border-radius: 4px;
 }
-/* Nav Active ----------------------------- */
+/* Nav Active ------------------------ */
 .navActive {
   background-color: #eed559;
   outline: 1px solid black;
   border-radius: 4px;
 }
-/* ----------------------------------------------*/
+/* ----------------------------------- */
 body main nav div section a img {
-  height: 25px;
+  height: 30px;
 }
 body main nav div section a p {
 }
-body main nav footer {
-  margin-top: -8px;
+body main aside {
+  flex-grow: 1;
+  height: inherit;
+
+  display: flex;
+}
+body main aside iframe {
+  flex-grow: 1;
+}
+
+footer {
+  background-color: #f8edb7;
+  width: inherit;
+  height: fit-content;
+  border-top: 3px solid black;
   text-align: center;
   font-weight: bolder;
-  background-color: #f8f1cb;
-  border-top: 2px solid black;
 
   position: sticky;
   bottom: 0;
 }
-body main aside {
-  overflow-y: auto;
-  overflow-x: hidden;
-  min-height: inherit;
-}
-body main aside iframe {
-  background: transparent;
-}
 
 /* Extra small devices (phones, less than 576px) */
-@media (max-width: 575.98px) {
-  body {
-    background-color: lightblue;
+@media (max-width: 575.99px) {
+  body main nav {
+    position: absolute;
   }
 }
 
 /* Small devices (tablets, 576px and up) */
-@media (min-width: 576px) and (max-width: 767.98px) {
-  body {
-    background-color: lightgreen;
-  }
-}
-
-/* Medium devices (desktops, 768px and up) */
-@media (min-width: 768px) and (max-width: 991.98px) {
-  body {
-    background-color: lightyellow;
-  }
-}
-
-/* Large devices (large desktops, 992px and up) */
-@media (min-width: 992px) and (max-width: 1199.98px) {
-  body {
-    background-color: lightcoral;
-  }
-}
-
-/* Extra large devices (extra large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-  body {
-    background-color: lightpink;
+@media (min-width: 576px) {
+  body main {
+    display: flex;
   }
 }

@@ -5,49 +5,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Halaman Utama</title>
+  <title>Index</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <header>
     <div class="HLeft">
-      <img src="images/humberger_menu.png" class="rotateOpen">
+      <img src="images/humberger_menu.png">
       <span>ArFSD</span>
     </div>
     <div class="HCenter"></div>
     <div class="HRight">
       <div class="profile">
         <img src="images/profile.jpg">
-        <div class="closeP">
+        <div>
           <iframe src="profile.php" frameborder="0" height="100%" width="100%"></iframe>
         </div>
       </div>
     </div>
   </header>
   <main>
-    <nav class="navOpen">
+    <nav>
       <div>
-        <?php for ($i = 0; $i < count($navList); $i++) { ?>
+        <?php foreach ($navList as $i => $nav) { ?>
           <section>
-            <span><?php echo ($navList[$i][0]) ?></span>
-            <?php for ($a = 0; $a < count($navList[$i][1]); $a++) { ?>
-              <a href="<?php echo ($navList[$i][1][$a][2]) ?>">
-                <img src="<?php echo ($navList[$i][1][$a][1]) ?>">
-                <p><?php echo ($navList[$i][1][$a][0]) ?></p>
+            <span><?php echo $nav[0] ?></span>
+            <?php foreach ($nav[1] as $a => $navA) { ?>
+              <a href="<?php echo $navA[2] ?>" class="navLink">
+                <img src="<?php echo $navA[1] ?>" alt="">
+                <p><?php echo $navA[0] ?></p>
               </a>
-            <?php  }; ?>
+            <?php }; ?>
           </section>
         <?php }; ?>
-
       </div>
-      <footer>&copy;Aris Mardiana 2024</footer>
+      <footer>&copy; Aris Mardiana 2024 </footer>
     </nav>
-    <aside>
-      <iframe src="halamanWeb/home.php" frameborder="100vw" width="100%" height="100%"></iframe>
-    </aside>
+    <aside><iframe src="halamanWeb/home.php" frameborder="0"></iframe></aside>
   </main>
+
 </body>
-<script src="script.js"></script>
 
 </html>
+<script src="script.js"></script>

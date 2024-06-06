@@ -1,0 +1,194 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+body {
+  overflow: hidden;
+}
+body header {
+  height: 50px;
+  width: 100vw;
+  background-color: #d1b190;
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid black;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+body header .HLeft {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+body header .HLeft img {
+  height: 30px;
+  outline: auto;
+  outline-offset: 3px;
+  border-radius: 50%;
+}
+/* rotaet img================ */
+.rotateOpen {
+  rotate: -90deg;
+  transition: 2s;
+}
+.rotateClose {
+  rotate: initial;
+  transition: 2s;
+}
+/* ========================== */
+body header .HLeft span {
+  font-size: 30px;
+  font-weight: 300;
+}
+body header .HCenter {
+}
+body header .HRight {
+  width: fit-content;
+}
+body header .HRight .profile {
+  position: relative;
+}
+body header .HRight .profile img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  outline: 1px solid blanchedalmond;
+}
+/* body header .HRight .profile div (muncul dan tidak) */
+.showP {
+  height: 90vh;
+  width: 250px;
+  background-color: rgb(161, 160, 160);
+  position: absolute;
+  top: 35px;
+  right: 35px;
+  border-radius: 10px 0 10px 10px;
+  outline: 2px solid black;
+  padding: 5px;
+}
+.closeP {
+  display: none;
+}
+/* --------------------------------------------------- */
+body main {
+  display: flex;
+  overflow: hidden;
+}
+body main nav {
+  background-color: #f8f4e1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: inherit;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+/* Open & Close Nav----------------------------- */
+.navOpen {
+  width: 250px;
+  transition: 2s;
+}
+.navClose {
+  width: 0%;
+  transition: 2s;
+}
+/* ----------------------------------------------*/
+body main nav div {
+  padding: 7px;
+}
+body main nav div section {
+  margin: 10px;
+  border-bottom: 1px solid black;
+}
+body main nav div section span {
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-decoration: underline double;
+}
+body main nav div section a {
+  display: flex;
+  column-gap: 5px;
+  text-decoration: none;
+  color: inherit;
+  align-items: center;
+  margin: 4px;
+  padding: 4px;
+
+  position: relative;
+}
+body main nav div section a:hover {
+  background-color: #eed559;
+  outline: 1px solid black;
+  border-radius: 4px;
+}
+/* Nav Active ----------------------------- */
+.navActive {
+  background-color: #eed559;
+  outline: 1px solid black;
+  border-radius: 4px;
+}
+/* ----------------------------------------------*/
+body main nav div section a img {
+  height: 25px;
+}
+body main nav div section a p {
+}
+body main nav footer {
+  margin-top: -8px;
+  text-align: center;
+  font-weight: bolder;
+  background-color: #f8f1cb;
+  border-top: 2px solid black;
+
+  position: sticky;
+  bottom: 0;
+}
+body main aside {
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: inherit;
+}
+body main aside iframe {
+  background: transparent;
+}
+
+/* Extra small devices (phones, less than 576px) */
+@media (max-width: 575.98px) {
+  body {
+    background-color: lightblue;
+  }
+}
+
+/* Small devices (tablets, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  body {
+    background-color: lightgreen;
+  }
+}
+
+/* Medium devices (desktops, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  body {
+    background-color: lightyellow;
+  }
+}
+
+/* Large devices (large desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  body {
+    background-color: lightcoral;
+  }
+}
+
+/* Extra large devices (extra large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  body {
+    background-color: lightpink;
+  }
+}

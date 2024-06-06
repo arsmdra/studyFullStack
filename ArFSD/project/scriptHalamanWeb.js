@@ -1,3 +1,5 @@
 window.addEventListener("click", (e) => {
-  window.parent.postMessage(`${e.target}`);
+  const message = "Halo dari iframe!";
+  // Mengirim pesan ke dokumen induk
+  window.parent.postMessage(message, window.location.origin);
 });
