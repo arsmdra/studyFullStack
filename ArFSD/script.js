@@ -1,6 +1,7 @@
 // Event Load & Resize Setting Tinggi Main
 window.addEventListener("load", tinggiMain);
 window.addEventListener("resize", tinggiMain);
+
 function tinggiMain(f) {
   // Untuk tinggi main tag, main kita akan setting degan javascript
   document.querySelector("body main").style.height = `${
@@ -9,33 +10,38 @@ function tinggiMain(f) {
 }
 
 // Event Nav Active
-document.querySelectorAll("body main nav div section a").forEach((navL) => {
-  if (
-    navL.getAttribute("href") ==
-    document.querySelector("body main aside iframe").getAttribute("src")
-  ) {
-    navL.classList.add("navActive");
-  }
+function setupNavEvents() {
+  document.querySelectorAll("body main nav div section a").forEach((navL) => {
+    if (
+      navL.getAttribute("href") ==
+      document.querySelector("body main aside iframe").getAttribute("src")
+    ) {
+      navL.classList.add("navActive");
+    }
 
-  navL.addEventListener("click", navActive);
-  navL.addEventListener("touchend", navActive);
-  function navActive(p) {
-    p.preventDefault();
-    document
-      .querySelector("body main aside iframe")
-      .setAttribute("src", `${p.target.getAttribute("href")}`);
-    document.querySelectorAll("body main nav div section a").forEach((c) => {
-      if (
-        c.getAttribute("href") ==
-        document.querySelector("body main aside iframe").getAttribute("src")
-      ) {
-        c.classList.add("navActive");
-      } else {
-        c.classList.remove("navActive");
-      }
-    });
-  }
-});
+    navL.addEventListener("click", navActive);
+    navL.addEventListener("touchend", navActive);
+  });
+}
+
+function navActive(p) {
+  p.preventDefault();
+  const targetUrl = p.currentTarget.getAttribute("href"); // gunakan p.currentTarget untuk mendapatkan href yang benar
+  document
+    .querySelector("body main aside iframe")
+    .setAttribute("src", targetUrl);
+
+  document.querySelectorAll("body main nav div section a").forEach((c) => {
+    if (c.getAttribute("href") == targetUrl) {
+      c.classList.add("navActive");
+    } else {
+      c.classList.remove("navActive");
+    }
+  });
+}
+
+// Initial setup
+setupNavEvents();
 
 // Device Break Point================================================================================================================
 switch (true) {
