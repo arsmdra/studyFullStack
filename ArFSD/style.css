@@ -1,5 +1,9 @@
 :root {
   --lebar: 100vw;
+  --imgProfile: 40px;
+  --profile_real: 50px;
+  --radius_wrapper_profil: 20px;
+  --burger_duration: 200ms;
 }
 
 * {
@@ -34,11 +38,11 @@ body header .HLeft img {
 /* rotate----------------------------- */
 .rotateOpen {
   rotate: -90deg;
-  transition: 2s;
+  transition: var(--burger_duration);
 }
 .rotateClose {
   rotate: initial;
-  transition: 2s;
+  transition: var(--burger_duration);
 }
 /* ----------------------------------- */
 body header .HLeft span {
@@ -60,15 +64,78 @@ body header .HRight {
 body header .HRight .profile {
   display: flex;
   align-items: center;
+  position: relative;
 }
-body header .HRight .profile img {
+body header .HRight .profile .profile_icon {
   border-radius: 50%;
-  height: 40px;
-  width: 40px;
+  height: var(--imgProfile);
+  width: var(--imgProfile);
   outline: 1px solid black;
 }
-body header .HRight .profile div {
+
+body header .HRight .profile .wrapper_profil_first {
+  position: absolute;
+  right: var(--imgProfile);
+  top: var(--imgProfile);
+  border-radius: var(--radius_wrapper_profil) 0 var(--radius_wrapper_profil)
+    var(--radius_wrapper_profil);
+  outline: 3px solid black;
+  background-color: #eed559;
+}
+body header .HRight .profile .wrapper_profil_first .wrapper_profil_second {
+  height: 85vh;
+  width: 250px;
+  margin: 10px;
+
+  display: grid;
+  grid-template-rows: var(--profile_real) auto;
+  grid-template-columns: var(--profile_real) auto;
+  gap: 10px;
+}
+/* Profil Active & Non Active */
+.profileOpen {
+  display: initial;
+}
+.profileClose {
   display: none;
+}
+/* -------------------------- */
+body
+  header
+  .HRight
+  .profile
+  .wrapper_profil_first
+  .wrapper_profil_second
+  .profile_real {
+  grid-column: 1/2;
+  grid-row: 1/2;
+
+  width: var(--profile_real);
+  height: var(--profile_real);
+  outline: 2px solid black;
+  border-radius: 50%;
+}
+body header .HRight .profile .wrapper_profil_first .wrapper_profil_second span {
+  grid-column: 2/3;
+  grid-row: 1/2;
+
+  align-self: center;
+}
+body
+  header
+  .HRight
+  .profile
+  .wrapper_profil_first
+  .wrapper_profil_second
+  .content_profile {
+  grid-column: 1/3;
+  grid-row: 2/3;
+
+  border-radius: 0 0 var(--radius_wrapper_profil) var(--radius_wrapper_profil);
+  padding: 0 3px 11px 3px;
+  margin: 0 -10px -10px -10px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 body main {
   width: var(--lebar);
@@ -88,16 +155,17 @@ body main nav {
 /* Nav close&open----------------------------- */
 .navOpen {
   width: 250px;
-  transition: 2s;
+  transition: var(--burger_duration);
 }
 .navClose {
   width: 0;
-  transition: 2s;
+  transition: var(--burger_duration);
 }
 /* ----------------------------------- */
 body main nav div {
 }
 body main nav div section {
+  margin: 10px;
   border-bottom: 1px solid black;
 }
 body main nav div section span {
