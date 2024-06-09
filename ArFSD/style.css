@@ -2,8 +2,14 @@
   --lebar: 100vw;
   --imgProfile: 40px;
   --profile_real: 50px;
-  --radius_wrapper_profil: 20px;
   --burger_duration: 200ms;
+
+  --radius_popup_wrapper: 20px 0 20px 20px;
+  --position_popup: absolute;
+  --tinggi_popup_wrapper: 85vh;
+  --lebar_popup_wrapper: 250px;
+  --bg_popup_wrapper: #eed559;
+  --outline_popup_wrapper: 3px solid black;
 }
 
 * {
@@ -59,10 +65,51 @@ body header .HRight {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  gap: 6px;
 }
+/* Header Right Menu----------------------------------------- */
+.wraper_first {
+  background-color: var(--bg_popup_wrapper);
+}
+#closeWraperFirst {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  height: 30px;
+}
+#closeWraperFirst:hover {
+  transform: scale(1.2);
+}
+/* ------------------------------------------------------ */
 
+body header .HRight .notifikasi {
+  position: relative;
+  display: flex;
+}
+body header .HRight .notifikasi img {
+  height: var(--imgProfile);
+}
+body header .HRight .notifikasi .notif_qtt {
+  position: var(--position_popup);
+  right: 0;
+  top: 0;
+  height: 20px;
+  width: 20px;
+  background-color: aqua;
+  outline: 0.5px solid black;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 10px;
+}
+body header .HRight .notifikasi .wraper_first .wraper_notif_second {
+}
 body header .HRight .profile {
   display: flex;
+  flex-direction: row;
   align-items: center;
   position: relative;
 }
@@ -73,30 +120,17 @@ body header .HRight .profile .profile_icon {
   outline: 1px solid black;
 }
 
-body header .HRight .profile .wrapper_profil_first {
-  position: absolute;
-  right: var(--imgProfile);
-  top: var(--imgProfile);
-  border-radius: var(--radius_wrapper_profil) 0 var(--radius_wrapper_profil)
-    var(--radius_wrapper_profil);
-  outline: 3px solid black;
-  background-color: #eed559;
-}
-body header .HRight .profile .wrapper_profil_first .wrapper_profil_second {
-  height: 85vh;
-  width: 250px;
-  margin: 10px;
-
+body header .HRight .profile .wraper_first .wrapper_profil_second {
   display: grid;
   grid-template-rows: var(--profile_real) auto;
   grid-template-columns: var(--profile_real) auto;
   gap: 10px;
 }
 /* Profil Active & Non Active */
-.profileOpen {
+.popupOpen {
   display: initial;
 }
-.profileClose {
+.popupClose {
   display: none;
 }
 /* -------------------------- */
@@ -104,7 +138,7 @@ body
   header
   .HRight
   .profile
-  .wrapper_profil_first
+  .wraper_first
   .wrapper_profil_second
   .profile_real {
   grid-column: 1/2;
@@ -115,7 +149,7 @@ body
   outline: 2px solid black;
   border-radius: 50%;
 }
-body header .HRight .profile .wrapper_profil_first .wrapper_profil_second span {
+body header .HRight .profile .wraper_first .wrapper_profil_second span {
   grid-column: 2/3;
   grid-row: 1/2;
 
@@ -125,15 +159,12 @@ body
   header
   .HRight
   .profile
-  .wrapper_profil_first
+  .wraper_first
   .wrapper_profil_second
   .content_profile {
   grid-column: 1/3;
   grid-row: 2/3;
 
-  border-radius: 0 0 var(--radius_wrapper_profil) var(--radius_wrapper_profil);
-  padding: 0 3px 11px 3px;
-  margin: 0 -10px -10px -10px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -205,6 +236,31 @@ body main aside {
   height: inherit;
 
   display: flex;
+  flex-direction: column;
+}
+body main aside .header_aside {
+  display: none;
+}
+body main aside .header_aside .wraper_header_aside {
+  height: 35px;
+  background-color: #f8f4e1;
+  box-sizing: border-box;
+  border-bottom: 1px solid black;
+  padding: 0 10px;
+
+  display: grid;
+  align-content: center;
+  grid-auto-flow: column;
+  justify-content: start;
+  column-gap: 20px;
+}
+body main aside .header_aside .wraper_header_aside img {
+  height: 20px;
+  border-radius: 25%;
+}
+body main aside .header_aside img:hover {
+  outline: 2px solid black;
+  outline-offset: 2px;
 }
 body main aside iframe {
   flex-grow: 1;
@@ -227,11 +283,84 @@ footer {
   body main nav {
     position: absolute;
   }
+
+  /* Header Right Menu----------------------------------------- */
+  .wraper_first {
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 10;
+  }
+  #closeWraperFirst {
+    display: initial;
+  }
+  /* ------------------------------------------------------ */
+  body header .HRight .notifikasi .wraper_first .wraper_notif_second {
+    box-sizing: border-box;
+    height: 100vh;
+    width: 100vw;
+    padding: 10px;
+  }
+  body header .HRight .profile .wraper_first .wrapper_profil_second {
+    box-sizing: border-box;
+    height: 100vh;
+    width: 100vw;
+    padding: 10px;
+  }
+  body
+    header
+    .HRight
+    .profile
+    .wraper_first
+    .wrapper_profil_second
+    .content_profile {
+    margin: 0;
+  }
 }
 
 /* Small devices (tablets, 576px and up) */
 @media (min-width: 576px) {
   body main {
     display: flex;
+  }
+
+  /* Header Right Menu----------------------------------------- */
+  .wraper_first {
+    position: var(--position_popup);
+    right: var(--imgProfile);
+    top: var(--imgProfile);
+    border-radius: var(--radius_popup_wrapper);
+    outline: var(--outline_popup_wrapper);
+  }
+  #closeWraperFirst {
+    /* display: none; */
+  }
+  body main aside .header_aside {
+    display: none;
+  }
+  /* ------------------------------------------------------ */
+  body header .HRight .notifikasi .wraper_first .wraper_notif_second {
+    height: var(--tinggi_popup_wrapper);
+    width: var(--lebar_popup_wrapper);
+    margin: 10px;
+  }
+  body header .HRight .profile .wraper_first .wrapper_profil_second {
+    margin: 10px;
+    height: var(--tinggi_popup_wrapper);
+    width: var(--lebar_popup_wrapper);
+  }
+  body
+    header
+    .HRight
+    .profile
+    .wraper_first
+    .wrapper_profil_second
+    .content_profile {
+    border-radius: 0 0 20px 20px;
+    padding: 0 3px 11px 3px;
+    margin: 0 -10px -10px -10px;
+  }
+  body main aside .header_aside {
+    display: initial;
   }
 }

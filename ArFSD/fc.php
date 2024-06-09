@@ -14,7 +14,7 @@ $navList = [
       ['Diary', 'images/diary.png', 'halamanWeb/diary.php'],
       ['Notes', 'images/note.png', 'halamanWeb/notes.php'],
       ['Personal Data', 'images/personal_data.png', 'halamanWeb/personalData.php'],
-      ['Data Base', 'images/database.png', 'halamanWeb/dataBase.php'],
+      ['Data Base', 'images/database.png', 'halamanWeb/dataBase/indexDB.php'],
       ['Personal Contact', 'images/personal_contact.png', 'halamanWeb/contact.php'],
     ]
   ],
@@ -25,14 +25,11 @@ $navList = [
       ['Accounting', 'project/images_project/accounting.png', 'project/p2.php'],
       ['Game', 'project/images_project/game-controller.png', 'project/p3.php'],
       ['Management', 'project/images_project/project-management.png', 'project/p1.php'],
-      ['Accounting', 'project/images_project/accounting.png', 'project/p1.php'],
-      ['Game', 'project/images_project/game-controller.png', 'project/p1.php'],
+      ['Accounting', 'project/images_project/accounting.png', 'project/p2.php'],
+      ['Game', 'project/images_project/game-controller.png', 'project/p3.php'],
       ['Management', 'project/images_project/project-management.png', 'project/p1.php'],
-      ['Accounting', 'project/images_project/accounting.png', 'project/p1.php'],
-      ['Game', 'project/images_project/game-controller.png', 'project/p1.php'],
-      ['Management', 'project/images_project/project-management.png', 'project/p1.php'],
-      ['Accounting', 'project/images_project/accounting.png', 'project/p1.php'],
-      ['Game', 'project/images_project/game-controller.png', 'project/p1.php'],
+      ['Accounting', 'project/images_project/accounting.png', 'project/p2.php'],
+      ['Game', 'project/images_project/game-controller.png', 'project/p3.php'],
     ]
   ],
 ];

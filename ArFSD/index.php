@@ -17,15 +17,25 @@
     </div>
     <div class="HCenter"></div>
     <div class="HRight">
+      <div class="notifikasi">
+        <img src="images/bell.png">
+        <div class="notif_qtt">100</div>
+        <div class="wraper_first popupClose" id="notif">
+          <div class="wraper_notif_second">
+            <img src="images/cross.png" id="closeWraperFirst" onclick="closeWrapper(this, Event)">
+          </div>
+        </div>
+      </div>
       <div class="profile">
         <img src=<?php echo $profile_img ?> class="profile_icon">
-        <div class="wrapper_profil_first profileClose">
+        <div class="wraper_first popupClose" id="profil">
           <div class="wrapper_profil_second">
+            <img src="images/cross.png" id="closeWraperFirst" onclick="closeWrapper(this, Event)">
             <img src=<?php echo $profile_img ?> class="profile_real">
             <span>
               <b style="text-decoration: underline;">Aris Mardiana</b>
               <br>
-              <i style="letter-spacing: 10px;">owner</i>
+              <i style="letter-spacing: 3px;">Developer </i>
             </span>
             <div class="content_profile">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam harum et facere animi laudantium inventore nihil, unde velit nostrum corporis reiciendis esse suscipit consectetur? At nemo eum excepturi iste expedita.
@@ -101,7 +111,16 @@
       </div>
       <footer>&copy; Aris Mardiana 2024</footer>
     </nav>
-    <aside><iframe src="halamanWeb/home.php" frameborder="0"></iframe></aside>
+    <aside>
+      <div class="header_aside">
+        <div class="wraper_header_aside">
+          <img src="images/right-arrow (2).png" id="backBtn" style="rotate: 180deg;" onclick="goBack()">
+          <img src="images/right-arrow (2).png" id="forwardBtn" onclick="goForward()">
+          <img src="images/refresh.png" id="reloadBtn" onclick="reload()">
+        </div>
+      </div>
+      <iframe src="halamanWeb/home.php" frameborder="0"></iframe>
+    </aside>
   </main>
 
 </body>

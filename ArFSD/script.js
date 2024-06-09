@@ -19,11 +19,11 @@ function setupNavEvents() {
   document
     .querySelectorAll("body main nav div section a")
     .forEach((navLink) => {
-      if (navLink.getAttribute("href") === currentUrl) {
-        navLink.classList.add("navActive");
-      }
+      // if (navLink.getAttribute("href") === currentUrl) {
+      //   navLink.classList.add("navActive");
+      // }
       navLink.addEventListener("click", navActive);
-      navLink.addEventListener("touchend", navActive);
+      navLink.addEventListener("touchstart", navActive);
     });
 }
 
@@ -45,65 +45,90 @@ function navActive(event) {
 // Inisialisasi event navigasi
 setupNavEvents();
 
-// Event Profile: Menyiapkan event untuk membuka dan menutup profil
-function setupProfile() {
-  const profileWrapper = document.querySelector(
-    "body header .HRight .profile .wrapper_profil_first "
+// Fungsi untuk menyiapkan event untuk elemen yang bisa dibuka dan ditutup (profil dan notifikasi)
+function setupToggleEvent(wrapperSelector, triggerSelector) {
+  const wrapper = document.querySelector(wrapperSelector);
+  const trigger = document.querySelector(triggerSelector);
+
+  // Menambahkan event listener untuk klik dan sentuhan pada window
+  window.addEventListener("click", (event) =>
+    handleToggleEvent(event, wrapperSelector, triggerSelector)
   );
-  // profileWrapper.classList.add("profileClose");
 
-  window.addEventListener("click", toggleProfile);
-  window.addEventListener("touchend", toggleProfile);
-
+  // Menambahkan event listener untuk klik di dalam iframe jika iframe ada
   const iframe = document.querySelector("body main aside iframe");
   if (iframe) {
     iframe.addEventListener("load", () => {
-      iframe.contentWindow.document.addEventListener(
-        "click",
-        closeProfileOnIframeClick
+      iframe.contentWindow.document.addEventListener("click", () =>
+        closeElementOnIframeClick(wrapperSelector)
       );
     });
   }
 }
 
-let touchEventProcessed = false;
+// Fungsi untuk mengelola logika buka/tutup elemen
+function handleToggleEvent(event, wrapperSelector, triggerSelector) {
+  const wrapper = document.querySelector(wrapperSelector);
+  const trigger = document.querySelector(triggerSelector);
 
-function toggleProfile(event) {
-  if (event.type === "touchend") {
-    touchEventProcessed = true;
-  } else if (event.type === "click" && touchEventProcessed) {
-    touchEventProcessed = false;
-    return;
-  }
-
-  const profileWrapper = document.querySelector(
-    "body header .HRight .profile .wrapper_profil_first"
-  );
-  if (
-    event.target === document.querySelector("body header .HRight .profile img")
-  ) {
-    profileWrapper.classList.toggle("profileClose");
-    profileWrapper.classList.toggle("profileOpen");
-  } else if (
-    event.target.closest("body header .HRight .profile .wrapper_profil_first")
-  ) {
+  // Jika target event adalah elemen pemicu (misalnya gambar profil atau notifikasi)
+  if (event.target === trigger) {
+    // Toggle kelas untuk membuka/menutup elemen
+    wrapper.classList.toggle("popupClose");
+    wrapper.classList.toggle("popupOpen");
+  } else if (event.target.closest(wrapperSelector)) {
+    // Jika klik terjadi di dalam elemen wrapper, jangan lakukan apa-apa
     return;
   } else {
-    profileWrapper.classList.add("profileClose");
-    profileWrapper.classList.remove("profileOpen");
+    // Jika klik terjadi di luar elemen wrapper, tutup elemen
+    wrapper.classList.add("popupClose");
+    wrapper.classList.remove("popupOpen");
   }
 }
 
-function closeProfileOnIframeClick() {
-  const profileWrapper = document.querySelector(
-    "body header .HRight .profile .wrapper_profil_first"
-  );
-  profileWrapper.classList.add("profileClose");
-  profileWrapper.classList.remove("profileOpen");
+// Fungsi untuk menutup elemen ketika klik terjadi di dalam iframe
+function closeElementOnIframeClick(wrapperSelector) {
+  const wrapper = document.querySelector(wrapperSelector);
+  wrapper.classList.add("popupClose");
+  wrapper.classList.remove("popupOpen");
 }
 
-// Inisialisasi event profil
-setupProfile();
+// Inisialisasi event untuk profil
+setupToggleEvent(
+  "body header .HRight .profile #profil",
+  "body header .HRight .profile img"
+);
+
+// Inisialisasi event untuk notifikasi
+setupToggleEvent(
+  "body header .HRight .notifikasi #notif",
+  "body header .HRight .notifikasi img"
+);
+// -------------------------------------------------------------------------------
+// Close Button (#closeWraperFirst)
+function closeWrapper(This, Event) {
+  const wrapper = This.parentElement.parentElement;
+
+  wrapper.classList.add("popupClose");
+  wrapper.classList.remove("popupOpen");
+}
+// -------------------------------------------------------------------------------
+
+// Fungsi untuk pindah ke halaman sebelumnya di iframe
+function goBack() {
+  iframe.contentWindow.history.back();
+}
+
+// Fungsi untuk pindah ke halaman setelahnya di iframe
+function goForward() {
+  iframe.contentWindow.history.forward();
+}
+
+// Fungsi untuk me-reload halaman di iframe
+function reload() {
+  iframe.contentWindow.location.reload();
+}
+// -------------------------------------------------------------------------------
 
 // Device Break Point: Menentukan tata letak berdasarkan lebar layar perangkat
 switch (true) {
@@ -119,7 +144,6 @@ switch (true) {
 
       // Menambahkan event listener untuk event click dan touchstart pada window
       window.addEventListener("click", handleNavigationEvent);
-      window.addEventListener("touchstart", handleNavigationEvent); // Menggunakan touchstart
 
       const iframe = document.querySelector("body main aside iframe");
       if (iframe) {
@@ -132,17 +156,7 @@ switch (true) {
       }
     }
 
-    let touchEventProcessed = false;
-
     function handleNavigationEvent(event) {
-      if (event.type === "touchstart") {
-        // Menggunakan touchstart
-        touchEventProcessed = true;
-      } else if (event.type === "click" && touchEventProcessed) {
-        touchEventProcessed = false;
-        return;
-      }
-
       const hamburgerIcon = document.querySelector(".HLeft img");
       const navigationBar = document.querySelector("body main nav");
 
