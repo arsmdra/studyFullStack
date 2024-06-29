@@ -1,11 +1,11 @@
 <?php
-// List Menu ========================================================
 $navList = [
   [
     'Navigasi',
     [
       ['Home', 'images/home.png', 'halamanWeb/home.php'],
       ['Chat', 'images/chat.png', 'halamanWeb/chat.php'],
+      ['Profil', 'images/aboutMe.png', 'halamanWeb/profil.php'],
     ]
   ],
   [
@@ -32,7 +32,22 @@ $navList = [
       ['Game', 'project/images_project/game-controller.png', 'project/p3.php'],
     ]
   ],
+  [
+    'Project',
+    [
+      ['Management', 'project/images_project/project-management.png', 'project/p1.php'],
+      ['Accounting', 'project/images_project/accounting.png', 'project/p2.php'],
+      ['Game', 'project/images_project/game-controller.png', 'project/p3.php'],
+      ['Management', 'project/images_project/project-management.png', 'project/p1.php'],
+      ['Accounting', 'project/images_project/accounting.png', 'project/p2.php'],
+      ['Game', 'project/images_project/game-controller.png', 'project/p3.php'],
+      ['Management', 'project/images_project/project-management.png', 'project/p1.php'],
+      ['Accounting', 'project/images_project/accounting.png', 'project/p2.php'],
+      ['Game', 'project/images_project/game-controller.png', 'project/p3.php'],
+    ]
+  ],
 ];
+
 
 
 $profile_img = "images/profile.jpg";

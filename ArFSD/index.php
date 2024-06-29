@@ -1,129 +1,308 @@
-<?php require 'fc.php'; ?>
+<?php
+session_start(); // Memulai sesi di bagian paling atas
+include 'config.php'; // Menghubungkan ke file konfigurasi database
+
+$eror_password = false;
+$eror_email = false;
+$registration_success = false;
+
+// Proses login
+if (isset($_POST['login'])) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Mencari pengguna dengan email yang sesuai
+    $sql = "SELECT * FROM account WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        // Memeriksa apakah password sesuai
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['loggedin'] = true; // Menyimpan status login di sesi
+            $_SESSION['email'] = $email; // Menyimpan email di sesi
+            header("Location: " . $user['role']); // Refresh halaman
+            exit;
+        } else {
+            $eror_password = true; // Password salah
+        }
+    } else {
+        $eror_email = true; // Email tidak ditemukan
+    }
+}
+
+// Proses registrasi
+if (isset($_POST['register'])) {
+    $username = $_POST['username'];
+    $newemail = $_POST['newemail'];
+    $password = $_POST['newPassword'];
+    $newPassword = password_hash($_POST['newPassword'], PASSWORD_DEFAULT); // Meng-hash password
+
+    // Periksa apakah email sudah ada
+    $sql_check = "SELECT * FROM account WHERE email = ?";
+    $stmt_check = $conn->prepare($sql_check);
+    $stmt_check->bind_param("s", $newemail);
+    $stmt_check->execute();
+    $result_check = $stmt_check->get_result();
+
+    if ($result_check->num_rows > 0) {
+        // Email sudah terdaftar
+        echo "<script>alert('Email sudah terdaftar. Silakan gunakan email lain.');</script>";
+    } else {
+        // Menyimpan pengguna baru di database
+        $sql = "INSERT INTO account (username, email, show_password, password) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssss", $username, $newemail, $password, $newPassword);
+        if ($stmt->execute()) {
+            $registration_success = true;
+        } else {
+            echo "<script>alert('Pendaftaran gagal: " . $stmt->error . "');</script>";
+        }
+    }
+}
+
+// Proses penggantian email
+if (isset($_POST['changeEmail']) && isset($_SESSION['loggedin'])) {
+    $newEmail = $_POST['newEmail'];
+    $currentEmail = $_SESSION['email'];
+
+    // Periksa apakah email baru sudah ada
+    $sql_check = "SELECT * FROM account WHERE email = ?";
+    $stmt_check = $conn->prepare($sql_check);
+    $stmt_check->bind_param("s", $newEmail);
+    $stmt_check->execute();
+    $result_check = $stmt_check->get_result();
+
+    if ($result_check->num_rows > 0) {
+        // Email baru sudah terdaftar
+        echo "<script>alert('Email baru sudah terdaftar. Silakan gunakan email lain.');</script>";
+    } else {
+        // Mengganti email di database
+        $sql = "UPDATE account SET email = ? WHERE email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $newEmail, $currentEmail);
+        if ($stmt->execute()) {
+            $_SESSION['email'] = $newEmail; // Perbarui sesi email
+            echo "<script>alert('Email berhasil diganti.');</script>";
+        } else {
+            echo "<script>alert('Gagal mengganti email: " . $stmt->error . "');</script>";
+        }
+    }
+}
+
+// Proses logout
+if (isset($_GET['logout'])) {
+    session_unset(); // Menghapus semua variabel sesi
+    session_destroy(); // Menghancurkan sesi
+    header("Location: " . $_SERVER['PHP_SELF']); // Kembali ke halaman utama
+    exit;
+}
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Index</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login, Registrasi, Ganti Email, dan Logout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #5CAF50;
+            font-family: Arial, sans-serif;
+        }
+
+        main {
+            outline: 3px solid;
+            max-width: 300px;
+            width: 100%;
+            padding: 20px;
+            background-color: #dcdcdc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            font-weight: bold;
+            font-size: large;
+            margin-bottom: 10px;
+        }
+
+        form {
+            display: grid;
+            grid-gap: 10px;
+        }
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            padding: 8px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: green;
+        }
+
+        .password-toggle {
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .password-toggle img {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: auto;
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 10px;
+            cursor: pointer;
+            color: blue;
+        }
+
+        a {
+            text-decoration: none;
+            color: blue;
+        }
+
+        a:hover,
+        button:hover {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
-  <header>
-    <div class="HLeft">
-      <img src="images/humberger_menu.png">
-      <span>ArFSD</span>
-    </div>
-    <div class="HCenter"></div>
-    <div class="HRight">
-      <div class="notifikasi">
-        <img src="images/bell.png">
-        <div class="notif_qtt">100</div>
-        <div class="wraper_first popupClose" id="notif">
-          <div class="wraper_notif_second">
-            <img src="images/cross.png" id="closeWraperFirst" onclick="closeWrapper(this, Event)">
-          </div>
-        </div>
-      </div>
-      <div class="profile">
-        <img src=<?php echo $profile_img ?> class="profile_icon">
-        <div class="wraper_first popupClose" id="profil">
-          <div class="wrapper_profil_second">
-            <img src="images/cross.png" id="closeWraperFirst" onclick="closeWrapper(this, Event)">
-            <img src=<?php echo $profile_img ?> class="profile_real">
-            <span>
-              <b style="text-decoration: underline;">Aris Mardiana</b>
-              <br>
-              <i style="letter-spacing: 3px;">Developer </i>
-            </span>
-            <div class="content_profile">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam harum et facere animi laudantium inventore nihil, unde velit nostrum corporis reiciendis esse suscipit consectetur? At nemo eum excepturi iste expedita.
-              Minima autem, inventore dolores, magnam temporibus natus harum placeat laudantium deleniti officia eum voluptates eius quod omnis incidunt! Fuga, ut sed exercitationem quia temporibus aliquid laudantium ab vitae deserunt? Nesciunt.
-              Voluptate delectus reprehenderit libero deserunt est doloribus nihil, repellendus ratione, corporis illo ipsa! Nihil minus fuga pariatur. Qui minima ab atque voluptas explicabo sed ratione, facilis nobis earum praesentium a!
-              At minima nostrum beatae cum corrupti quos architecto quia maxime ipsa aut debitis, accusamus id earum incidunt illum perferendis voluptates accusantium voluptas dolore eligendi nemo mollitia. Voluptatem odit accusamus quos.
-              Non mollitia nemo blanditiis. Et ab, velit animi eligendi consequatur est eos quas obcaecati, id cumque temporibus omnis, molestias cupiditate explicabo consectetur in totam maxime molestiae mollitia. Accusamus, laborum commodi!
-              Aliquid incidunt placeat reiciendis consequatur doloribus alias error vel nihil a iste odio provident laudantium quas facere quia impedit, repellat enim aut. Porro officiis explicabo possimus? Est hic a quibusdam!
-              Minima vel ullam ad quo excepturi et nam molestiae consectetur quasi! Distinctio, eligendi at corrupti iure nulla quia molestias aliquid neque laboriosam praesentium illum placeat. Assumenda cum cupiditate non mollitia!
-              Quisquam tempora soluta quod, architecto doloremque modi expedita, ipsam nobis vero autem aliquid, repudiandae numquam? Voluptas et natus laboriosam sit nam excepturi, quam autem voluptate. Sint beatae explicabo harum aliquam.
-              Quaerat incidunt veniam consectetur sed. A placeat officiis natus consequatur, quidem distinctio optio velit doloremque soluta totam omnis nihil voluptates exercitationem, asperiores labore quam nisi nemo vitae ea! Facere, incidunt?
-              Natus saepe officia dolores pariatur, a sequi doloribus aliquid id aliquam nam consectetur at magni numquam blanditiis deserunt nemo voluptatem recusandae consequatur eius obcaecati autem quas asperiores molestias amet? Blanditiis.
-              Molestiae dolorum enim veritatis quos magni corrupti maiores odio consectetur ducimus placeat soluta totam illum corporis aspernatur, impedit ex, distinctio architecto modi. Architecto non quo fuga magni sunt exercitationem ipsum!
-              Amet error, laborum quisquam eos perspiciatis repellendus nobis veniam quos fuga atque. Doloremque consectetur ut sequi voluptas consequuntur, facere officiis, enim dignissimos tempore sed nisi praesentium dolore, modi laboriosam sit?
-              Tempore in deleniti illum nobis, libero ducimus beatae, delectus expedita consectetur adipisci necessitatibus nemo sit tempora? Deleniti eum molestiae corporis veritatis consectetur laboriosam earum? Doloremque fugit perferendis voluptatibus cum sapiente.
-              Autem suscipit perspiciatis hic vel, laudantium nihil veritatis sit, rem, sint facilis repellat enim? Rerum iste, totam dolorum ducimus assumenda atque, molestias repellat maiores quibusdam qui aliquam fugit recusandae voluptatem.
-              Quod accusamus maxime reprehenderit corporis animi repellendus reiciendis qui facere laboriosam iusto illum perspiciatis explicabo consectetur, aliquam atque quasi. Esse dolore repellendus ex veniam itaque numquam magni deleniti ea officiis.
-              Omnis ad quibusdam placeat deserunt suscipit aliquam error? Illo, vel error blanditiis sit aliquid et pariatur temporibus esse aut, dignissimos laboriosam quibusdam, tempore doloremque atque fugit non. Eum, quidem illo.
-              Optio, omnis dolore. Sequi alias quis aperiam architecto dolor. Voluptates molestiae dolorum at placeat excepturi modi ex commodi dolore nemo, velit autem, earum, sed amet dolores. Fuga suscipit provident molestiae?
-              Corporis aliquam nihil asperiores similique eum ab cum, quisquam repudiandae libero et commodi repellendus vel voluptate voluptatibus praesentium est ad eius voluptatem doloremque molestias quas, saepe autem laudantium nulla. Incidunt.
-              Commodi eos, excepturi error perferendis delectus at maiores ex reiciendis accusantium! Qui eveniet natus deserunt architecto eos amet asperiores, sapiente quidem quae, maiores blanditiis quam autem sed temporibus suscipit magnam?
-              Cupiditate nulla deleniti distinctio, obcaecati quae iusto in eius vitae dolorem vel saepe vero ea et magni voluptates. Praesentium culpa beatae voluptate doloremque veniam perspiciatis nobis. In a qui facilis.
-              Modi deleniti dolor alias facilis laboriosam quis consequatur magni, beatae aliquid sapiente id neque doloribus tenetur suscipit dolore natus ab fugit aut voluptate expedita culpa voluptates laborum, pariatur qui! Repudiandae.
-              Voluptatem minus officiis eveniet totam placeat quos, optio magnam, pariatur fugit unde distinctio expedita ipsa, quam velit! Quidem quia eos possimus veniam id non quos obcaecati veritatis, dolor, iste in!
-              Nostrum culpa eveniet ratione libero a, deleniti sequi earum odit asperiores tempora rerum nemo, eius laudantium repellendus architecto impedit est quod exercitationem. Nisi ducimus repellendus, animi voluptatum blanditiis facere esse?
-              Repellendus, veniam saepe tempora dolorem aspernatur minus laudantium illum sunt iusto incidunt possimus reprehenderit fugiat excepturi minima culpa nemo voluptatibus sed, omnis iure tenetur eum odio cum voluptate magnam! Architecto.
-              Totam consectetur mollitia reiciendis eum nulla laudantium saepe praesentium magnam! Nostrum, nisi! Aspernatur, delectus fugiat corrupti quis voluptatem praesentium sint itaque natus molestias ab, magnam autem eos! Numquam, vel reiciendis?
-              Ipsam deserunt a eaque molestiae quis magni culpa corporis velit, voluptas nulla aliquid enim amet voluptatibus. Quia incidunt culpa inventore voluptas illo! Soluta autem similique provident numquam, consectetur culpa nam?
-              Quisquam mollitia pariatur fugiat architecto consequuntur et aliquam labore nisi doloremque natus hic praesentium voluptates, quis atque quod repellat possimus culpa odio commodi voluptatibus? Mollitia et perspiciatis architecto earum non.
-              Nihil quod nulla eius adipisci quia. Omnis reiciendis aliquam error nihil quibusdam veniam porro, consequuntur odio vitae quidem dolor ipsa molestias culpa nam iste, sint at quod cupiditate quisquam quia?
-              Aliquam quidem dolorem ullam, laborum adipisci vel, in animi excepturi cupiditate, fuga eligendi. Itaque sint quis, eveniet qui provident dignissimos in quas totam sunt numquam esse eligendi aspernatur, enim accusamus!
-              Perferendis officia ipsum officiis quo, suscipit illum. Et natus libero quisquam unde neque. Quod eos laudantium, fugit atque tenetur explicabo totam dignissimos officiis quasi vel laborum deleniti, ullam, id rerum.
-              Alias soluta, iusto voluptatum laboriosam saepe debitis, ipsam mollitia necessitatibus reprehenderit laudantium quisquam. Nam, dolorem officia. Inventore libero dolorem nisi, nulla dolor commodi vitae repellat ea et ipsa molestias nobis.
-              Dignissimos mollitia quia culpa quidem quo voluptatibus? Sequi, ullam hic reprehenderit minima quae inventore fugiat nobis dicta amet, magnam, aliquid quod dolorum perferendis eaque saepe recusandae mollitia voluptate repellendus itaque!
-              Explicabo eius qui inventore omnis natus sed sit rem neque velit dolorum. Impedit voluptatibus ratione, atque sapiente quisquam, ab corporis cum ducimus quod possimus blanditiis amet, voluptatem necessitatibus aliquid aliquam.
-              Ab eveniet accusantium quaerat cum. Quas, ipsa labore. Ipsa quisquam vel minus expedita consectetur ut esse quis libero totam praesentium, aliquam optio quo quod excepturi ea quasi. Incidunt, quibusdam laborum.
-              Eveniet minima recusandae itaque repudiandae quidem qui dolorem placeat fugiat aliquid quas numquam reprehenderit vitae, ipsum, repellendus accusamus, nisi inventore consectetur accusantium doloribus error molestiae molestias excepturi. Sequi, officiis facere?
-              Suscipit quos minima corrupti inventore voluptate deserunt laborum error dolor dicta fugiat. Illo asperiores, impedit repellat architecto numquam necessitatibus autem eaque odio itaque earum aliquam! Corrupti id architecto saepe nemo!
-              Molestiae cupiditate dolore officia, quas amet quidem quaerat, laborum nam eos voluptatem vel expedita iure dolorem quo exercitationem soluta totam. Numquam quidem porro dicta inventore harum obcaecati perferendis voluptates facilis.
-              Eaque sequi deleniti numquam omnis possimus modi adipisci harum, in repudiandae corrupti nulla nam placeat consectetur accusantium unde et accusamus suscipit saepe provident voluptas eum! Sit dolore incidunt tenetur doloremque.
-              Consectetur labore optio obcaecati. Facilis eligendi similique ab ad quas, minus adipisci et. Impedit deleniti repellendus eos hic possimus reiciendis commodi ex harum, repudiandae quo, nesciunt laborum, assumenda enim cupiditate.
-              Magnam perspiciatis nulla molestiae voluptates ad ipsam velit provident quisquam distinctio corporis. Earum eos soluta hic odit eveniet repudiandae! Dignissimos adipisci debitis enim facere esse et dolorum laboriosam fuga incidunt?
-              Porro qui placeat magnam? Laboriosam id nemo dicta quaerat commodi eligendi accusantium deserunt recusandae? Nam neque maxime perferendis minus saepe. Reprehenderit eius facere sint animi soluta optio officia, nulla modi!
-              Ut necessitatibus consequatur perspiciatis eos architecto. Aperiam eveniet nisi incidunt perferendis! Molestias voluptates libero nemo blanditiis est ducimus dicta quia amet dolore, animi officiis tempora quas architecto optio voluptatem fugiat.
-              Vel quae, praesentium ipsa ipsam dolorum eos alias nulla totam, amet, magni dignissimos! Minus perspiciatis impedit hic voluptas harum a, in voluptatum laboriosam alias assumenda sapiente, dolores vel, nulla optio.
-              Fuga amet, alias quis dolorem beatae quos? Dicta dolorum laboriosam harum molestias deserunt ipsa sunt? Possimus, earum a explicabo vitae non enim hic incidunt architecto delectus eligendi velit cupiditate natus?
-              Earum expedita molestias blanditiis facere, modi officiis voluptate maiores nobis eos nostrum, vero quos eum nemo. Officiis nulla, culpa veritatis et tenetur dolor? Aut ipsum, ex quibusdam officiis voluptates nobis.
-              Odit provident facilis rem praesentium labore reiciendis, nemo natus iste sequi ea tenetur repudiandae! Pariatur molestias corporis assumenda fugiat maxime architecto delectus quasi ex placeat. Eaque accusamus maiores veniam minus.
-              Placeat amet inventore esse incidunt, iste quod accusantium quisquam sint magnam, dolorem maxime excepturi! Numquam, autem dicta! Dolorem, voluptatibus? Quibusdam cumque, perferendis illo odio mollitia sint corporis ex dignissimos ut!
-              Ea, cupiditate impedit suscipit eaque itaque eos maxime ab aut eveniet! Qui aliquam aspernatur, placeat harum modi, dolore consequatur explicabo asperiores eligendi quod incidunt laudantium quibusdam est ullam! Qui, soluta.
-              Asperiores cupiditate facere ducimus! Perferendis est unde voluptas itaque repudiandae earum. Ex aut, dolorum porro alias assumenda repellendus eveniet tempora a mollitia perferendis? Earum tempore rerum sequi minus, nesciunt pariatur?
-              Officiis dicta alias molestiae facere iusto illo quod enim! Delectus labore distinctio eaque harum vitae inventore ipsa maxime quaerat. Animi suscipit ipsa quibusdam corrupti quaerat, odio obcaecati porro ducimus a?
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-  <main>
-    <nav>
-      <div>
-        <?php foreach ($navList as $i => $nav) { ?>
-          <section>
-            <span><?php echo $nav[0]; ?></span>
-            <?php foreach ($nav[1] as $a => $navA) { ?>
-              <a href=<?php echo $navA[2]; ?> class="navLink">
-                <img src=<?php echo $navA[1]; ?> alt="">
-                <p><?php echo $navA[0]; ?></p>
-              </a>
-            <?php } ?>
-          </section>
+    <main>
+        <header id="formHeader">Login</header>
+        <?php if ($eror_password) { ?>
+            <span style="display:block; background-color: red; margin:5px 0; padding: 2px; outline:1px solid; font-weight:bold;">Password anda salah</span>
+        <?php } else if ($eror_email) { ?>
+            <span style="display:block; background-color: red; margin:5px 0; padding: 2px; outline:1px solid; font-weight:bold;">Email anda salah</span>
         <?php } ?>
-      </div>
-      <footer>&copy; Aris Mardiana 2024</footer>
-    </nav>
-    <aside>
-      <div class="header_aside">
-        <div class="wraper_header_aside">
-          <img src="images/right-arrow (2).png" id="backBtn" style="rotate: 180deg;" onclick="goBack()">
-          <img src="images/right-arrow (2).png" id="forwardBtn" onclick="goForward()">
-          <img src="images/refresh.png" id="reloadBtn" onclick="reload()">
-        </div>
-      </div>
-      <iframe src="halamanWeb/home.php" frameborder="0"></iframe>
-    </aside>
-  </main>
 
+        <form id="loginForm" action="" method="post">
+            <label for="email">E-Mail:</label>
+            <input type="text" id="email" name="email" required>
+
+            <label for="password">Kata Sandi:</label>
+            <div class="password-toggle">
+                <input type="password" id="password" name="password" required>
+                <img src="eye-close.png" alt="Tampilkan Kata Sandi" id="togglePassword">
+            </div>
+
+            <button type="submit" name="login">Masuk</button>
+        </form>
+
+        <div class="toggle-link" id="showRegister">Belum punya akun? Daftar di sini</div>
+
+        <form id="registerForm" action="" method="post" style="display: none;">
+            <label for="username">Nama Pengguna:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="newemail">Email:</label>
+            <input type="email" id="newemail" name="newemail" required>
+
+            <label for="newPassword">Kata Sandi:</label>
+            <div class="password-toggle">
+                <input type="password" id="newPassword" name="newPassword" required>
+                <img src="eye-close.png" alt="Tampilkan Kata Sandi" id="toggleNewPassword">
+            </div>
+
+            <button type="submit" name="register">Daftar</button>
+        </form>
+
+        <div class="toggle-link" id="showLogin" style="display: none;">Sudah punya akun? Masuk di sini</div>
+        <?php if ($registration_success) { ?>
+            <script>
+                alert("Pendaftaran berhasil! Silakan login.");
+                document.getElementById('showLogin').click();
+            </script>
+        <?php } ?>
+
+    </main>
+
+    <script>
+        // Fungsi untuk toggle visibility password
+        var togglePassword = document.getElementById('togglePassword');
+        var passwordField = document.getElementById('password');
+        var toggleNewPassword = document.getElementById('toggleNewPassword');
+        var newPasswordField = document.getElementById('newPassword');
+
+        togglePassword.addEventListener('click', function() {
+            var type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.src = type === 'password' ? 'eye-close.png' : 'eye-open.png';
+        });
+
+        toggleNewPassword.addEventListener('click', function() {
+            var type = newPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            newPasswordField.setAttribute('type', type);
+            this.src = type === 'password' ? 'eye-close.png' : 'eye-open.png';
+        });
+
+        // Fungsi untuk toggle form login dan registrasi
+        var showRegister = document.getElementById('showRegister');
+        var showLogin = document.getElementById('showLogin');
+        var loginForm = document.getElementById('loginForm');
+        var registerForm = document.getElementById('registerForm');
+        var formHeader = document.getElementById('formHeader');
+
+        showRegister.addEventListener('click', function() {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'grid';
+            showRegister.style.display = 'none';
+            showLogin.style.display = 'block';
+            formHeader.textContent = 'Daftar';
+        });
+
+        showLogin.addEventListener('click', function() {
+            registerForm.style.display = 'none';
+            loginForm.style.display = 'grid';
+            showLogin.style.display = 'none';
+            showRegister.style.display = 'block';
+            formHeader.textContent = 'Login';
+        });
+    </script>
 </body>
 
 </html>
-<script src="script.js"></script>
