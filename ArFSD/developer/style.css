@@ -205,7 +205,7 @@ header {
 }
 .Content_HR {
   overflow-y: auto;
-  margin: 0 -10px;
+  margin: 0 -10;
   padding: 0 10px;
 }
 /* ============================== */

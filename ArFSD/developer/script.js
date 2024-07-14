@@ -24,61 +24,39 @@ function OpenCloseNav() {
 // Deklarasi
 OpenCloseNav();
 
-// API | Nav Active====================================================================
-function NavActive() {
-  const iframe = document.querySelector("main iframe");
-  const navList = document.querySelectorAll("nav div section a");
-
-  const callback = function (mutationList, observer) {
-    for (let mutation of mutationList) {
-      const urlIframe = mutation.target.getAttribute("src");
-      for (const nav of navList) {
-        if (urlIframe === nav.getAttribute("href")) {
-          navList.forEach((N) => {
-            if (N.getAttribute("href") == urlIframe) {
-              N.classList.add("navActive");
-            } else {
-              N.classList.remove("navActive");
-            }
-          });
-        }
-      }
-    }
-  };
-
-  const config = {
-    attributes: true,
-    attributeFilter: ["src"],
-  };
-
-  const emlentTarget = iframe;
-
-  const observer = new MutationObserver(callback);
-
-  observer.observe(emlentTarget, config);
-}
-
-// Event Nav Active: Menandai tautan navigasi yang aktif berdasarkan URL saat ini
-function setupNavEvents() {
-  const currentUrl = document.querySelector("main iframe").getAttribute("src");
-  document.querySelectorAll("nav div section a").forEach((navLink) => {
-    if (navLink.getAttribute("href") === currentUrl) {
-      navLink.classList.add("navActive");
-    }
-    navLink.addEventListener("click", navActive);
-    navLink.addEventListener("touchstart", navActive);
-  });
-}
-
+// Nav Active====================================================================
 function navActive(event) {
   event.preventDefault();
   const targetUrl = event.currentTarget.getAttribute("href");
   document.querySelector(" main iframe").setAttribute("src", targetUrl);
 }
+function dirname(path) {
+  // Split the path by '/' and remove empty strings
+  const parts = path.split("/").filter((part) => part.length > 0);
+  // Get the second last element which is the directory
+  return parts[parts.length - 2] + "/" + parts[parts.length - 1];
+}
+// Event Nav Active: Menandai tautan navigasi yang aktif berdasarkan URL saat ini
+function setupNavEvents() {
+  const iframe = document.querySelector("main iframe");
 
+  iframe.addEventListener("load", () => {
+    let iframePath = iframe.contentWindow.location.pathname;
+    // Dapatkan direktori dari path
+    const directory = dirname(iframePath);
+    document.querySelectorAll("nav div section a").forEach((navLink) => {
+      if (navLink.getAttribute("href") === directory) {
+        navLink.classList.add("navActive");
+      } else {
+        navLink.classList.remove("navActive");
+      }
+      navLink.addEventListener("click", navActive);
+      navLink.addEventListener("touchstart", navActive);
+    });
+  });
+}
 // Inisialisasi event navigasi
 setupNavEvents();
-NavActive();
 
 // API | Nav``/Iframe Content===============================================================``
 
@@ -173,6 +151,114 @@ function perventDefault(event, tagSelector) {
   }
 }
 perventDefault("click", "nav div section a");
+
+// rubah isi kontent dengan doble klik===============================================================
+function changeInnerContent(selector) {
+  var oldElement = selector;
+  var newElement = document.createElement("textarea");
+
+  // Salin atribut-atribut yang ada dari elemen lama ke elemen baru
+  for (var i = 0; i < oldElement.attributes.length; i++) {
+    var attr = oldElement.attributes[i];
+    newElement.setAttribute(attr.name, attr.value);
+  }
+
+  // Salin isi (child nodes) dari elemen lama ke elemen baru
+  newElement.type = "text";
+  newElement.value = oldElement.innerText;
+
+  // Menyesuaikan font
+  newElement.style.fontFamily = "inherit";
+  newElement.style.fontSize = "inherit";
+  newElement.style.resize = "none";
+  newElement.setAttribute("spellcheck", "false");
+
+  // Ganti elemen lama dengan elemen baru dalam DOM
+  oldElement.style.display = "none";
+  oldElement.parentNode.insertBefore(newElement, oldElement);
+
+  newElement.addEventListener("blur", function () {
+    oldElement.innerText = newElement.value;
+    oldElement.style.display = "initial";
+    newElement.remove();
+  });
+
+  newElement.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      if (e.shiftKey) {
+        // Tambahkan baris baru jika Shift + Enter ditekan
+        var start = this.selectionStart;
+        var end = this.selectionEnd;
+        this.value =
+          this.value.substring(0, start) + "\n" + this.value.substring(end);
+        this.selectionStart = this.selectionEnd = start + 1;
+      } else {
+        // Blur elemen jika hanya Enter yang ditekan
+        this.blur();
+      }
+      e.preventDefault(); // Mencegah perilaku default Enter
+    } else if (e.key === "Tab") {
+      // Tambahkan indentasi jika Tab ditekan
+      e.preventDefault();
+      var start = this.selectionStart;
+      var end = this.selectionEnd;
+      var tabCharacter = "    "; // 4 spasi atau gunakan "\t" untuk karakter tab
+
+      // Menambahkan spasi di posisi kursor
+      this.value =
+        this.value.substring(0, start) +
+        tabCharacter +
+        this.value.substring(end);
+
+      // Memindahkan posisi kursor
+      this.selectionStart = this.selectionEnd = start + tabCharacter.length;
+    }
+  });
+  newElement.focus();
+}
+function FunctionInputInline() {
+  const inputs = document.querySelectorAll("#inputInline");
+  // Variabel untuk mengatur durasi sentuhan panjang
+  var touchDuration = 1500; // 2 detik
+  var touchTimer; // Variabel untuk menyimpan timer
+  var isTouchActive = false; // Flag untuk mengatur status sentuhan
+
+  // Fungsi untuk menangani sentuhan mulai
+  function handleTouchStart(e) {
+    isTouchActive = true;
+    touchTimer = setTimeout(function () {
+      if (isTouchActive) {
+        changeInnerContent(e.target);
+      }
+    }, touchDuration);
+  }
+
+  // Fungsi untuk menangani sentuhan berakhir
+  function handleTouchEnd(e) {
+    isTouchActive = false;
+    if (touchTimer) {
+      clearTimeout(touchTimer); // Menghapus timer
+    }
+  }
+
+  // Fungsi untuk menangani sentuhan bergerak
+  function handleTouchMove(e) {
+    isTouchActive = false;
+    if (touchTimer) {
+      clearTimeout(touchTimer); // Menghapus timer
+    }
+  }
+  inputs.forEach((input) => {
+    input.addEventListener("dblclick", (e) => {
+      changeInnerContent(e.target);
+    });
+    input.addEventListener("touchstart", handleTouchStart);
+    input.addEventListener("touchend", handleTouchEnd);
+    input.addEventListener("touchmove", handleTouchMove);
+  });
+}
+// Deklarasi
+FunctionInputInline();
 
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 switch (true) {

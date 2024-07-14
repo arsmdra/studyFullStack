@@ -1,67 +1,81 @@
-<?php
-// Proses penggantian email
-if (isset($_POST['changeEmail']) && isset($_SESSION['loggedin'])) {
-    $newEmail = $_POST['newEmail'];
-    $currentEmail = $_SESSION['email'];
-
-    // Periksa apakah email baru sudah ada
-    $sql_check = "SELECT * FROM account WHERE email = ?";
-    $stmt_check = $conn->prepare($sql_check);
-    $stmt_check->bind_param("s", $newEmail);
-    $stmt_check->execute();
-    $result_check = $stmt_check->get_result();
-
-    if ($result_check->num_rows > 0) {
-        // Email baru sudah terdaftar
-        echo "<script>
-        alert('Email baru sudah terdaftar. Silakan gunakan email lain.');
-    </script>";
-    } else {
-        // Mengganti email di database
-        $sql = "UPDATE account SET email = ? WHERE email = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ss", $newEmail, $currentEmail);
-        if ($stmt->execute()) {
-            $_SESSION['email'] = $newEmail; // Perbarui sesi email
-            echo "<script>
-        alert('Email berhasil diganti.');
-    </script>";
-        } else {
-            echo "<script>
-        alert('Gagal mengganti email: " . $stmt->error . "');
-    </script>";
-        }
-    }
-}
-
-// Proses logout
-if (isset($_GET['logout'])) {
-    session_unset(); // Menghapus semua variabel sesi
-    session_destroy(); // Menghancurkan sesi
-    header("Location: " . $_SERVER['PHP_SELF']); // Kembali ke halaman utama
-    exit;
-};
-?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Double Tap and Long Touch</title>
+  <style>
+    .myElement {
+      width: 100px;
+      height: 100px;
+      background-color: lightblue;
+      margin: 10px;
+      display: inline-block;
+      user-select: none; /* Disable text selection on double tap */
+    }
+  </style>
 </head>
-
 <body>
-    <?php if (isset($_SESSION['loggedin'])) { ?>
-        <header id="formHeader">Selamat Datang, <?php echo $_SESSION['email']; ?></header>
-        <form id="changeEmailForm" action="" method="post">
-            <label for="newEmail">Email Baru:</label>
-            <input type="email" id="newEmail" name="newEmail" required>
-            <button type="submit" name="changeEmail">Ganti Email</button>
-        </form>
-        <a href="?logout=true">Logout</a>
-    <?php } ?>
-</body>
+  <!-- Elemen-elemen dengan event listener -->
+  <div class="myElement"></div>
+  <div class="myElement"></div>
+  <div class="myElement"></div>
 
+  <script>
+    // Variabel untuk mengatur durasi sentuhan panjang
+    var touchDuration = 3000; // 3 detik
+    var touchTimer; // Variabel untuk menyimpan timer
+    var isTouchActive = false; // Flag untuk mengatur status sentuhan
+
+    // Fungsi untuk menangani sentuhan mulai
+    function handleTouchStart(e) {
+      isTouchActive = true;
+      touchTimer = setTimeout(function() {
+        if (isTouchActive) {
+          changeInnerContent(e.target);
+        }
+      }, touchDuration);
+    }
+
+    // Fungsi untuk menangani sentuhan berakhir
+    function handleTouchEnd(e) {
+      isTouchActive = false;
+      if (touchTimer) {
+        clearTimeout(touchTimer); // Menghapus timer
+      }
+    }
+
+    // Fungsi untuk menangani sentuhan bergerak
+    function handleTouchMove(e) {
+      isTouchActive = false;
+      if (touchTimer) {
+        clearTimeout(touchTimer); // Menghapus timer
+      }
+    }
+
+    // Fungsi untuk mengganti konten
+    function changeInnerContent(element) {
+      // Contoh: Mengganti teks elemen
+      element.innerHTML = "Content Changed";
+    }
+
+    // Fungsi untuk menambahkan event listener pada setiap elemen
+    function addEventListenersToElements(selector) {
+      var elements = document.querySelectorAll(selector);
+      elements.forEach(function(element) {
+        element.addEventListener("dblclick", function(e) {
+          if (!isTouchActive) {
+            changeInnerContent(e.target);
+          }
+        });
+        element.addEventListener("touchstart", handleTouchStart);
+        element.addEventListener("touchend", handleTouchEnd);
+        element.addEventListener("touchmove", handleTouchMove);
+      });
+    }
+
+    // Panggil fungsi untuk menambahkan event listener ke elemen-elemen dengan class 'myElement'
+    addEventListenersToElements('.myElement');
+  </script>
+</body>
 </html>

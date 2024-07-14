@@ -1,4 +1,3 @@
-<?php require 'fcHalamanWeb.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 

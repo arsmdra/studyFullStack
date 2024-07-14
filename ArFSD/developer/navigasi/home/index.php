@@ -1,6 +1,3 @@
-<?php require 'fcHalamanWeb.php'; ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -141,7 +138,7 @@
     </nav>
     <main>
         <section id="bio" class="content">
-            <img src="../images/ilustration-biodata.png" alt="" />
+            <img src="../../images/ilustration-biodata.png" alt="" />
             <div class="deskripsi">
                 <h1>Selamat datang di #web-pribadi saya</h1>
                 <h2>Bio Data</h2>
@@ -157,7 +154,7 @@
             </div>
         </section>
         <section id="rincianDiri" class="content">
-            <img src="../images/abotme-ilustration.png" alt="" />
+            <img src="../../images/abotme-ilustration.png" alt="" />
             <div class="deskripsi">
                 <h1>Selamat datang di #web-pribadi saya</h1>
                 <h2>About Me</h2>
@@ -173,7 +170,7 @@
             </div>
         </section>
         <section id="pendidikan" class="content">
-            <img src="../images/ilustration-study.png" alt="" />
+            <img src="../../images/ilustration-study.png" alt="" />
             <div class="deskripsi">
                 <h1>Selamat datang di #web-pribadi saya</h1>
                 <h2>Riwayat Pendidikan</h2>
@@ -189,7 +186,7 @@
             </div>
         </section>
         <section id="kemampuan" class="content">
-            <img src="../images/ilustration-skill.png" alt="" />
+            <img src="../../images/ilustration-skill.png" alt="" />
             <div class="deskripsi">
                 <h1>Selamat datang di #web-pribadi saya</h1>
                 <h2>Skill & Kemapuan Tambahan</h2>
@@ -203,7 +200,7 @@
             </div>
         </section>
         <section id="pekerjaan" class="content">
-            <img src="../images/ilustration-pengalaman kerja.png" alt="" />
+            <img src="../../images/ilustration-pengalaman kerja.png" alt="" />
             <div class="deskripsi">
                 <h1>Selamat datang di #web-pribadi saya</h1>
                 <h2>Pengalaman Kerja</h2>
@@ -219,7 +216,7 @@
             </div>
         </section>
         <section id="portofolio" class="content">
-            <img src="../images/ilustrasi-portofolio.png" alt="" />
+            <img src="../../images/ilustrasi-portofolio.png" alt="" />
             <div class="deskripsi">
                 <h1>Selamat datang di #web-pribadi saya</h1>
                 <h2>Portofolio</h2>
@@ -235,7 +232,7 @@
             </div>
         </section>
         <section id="rekamMedis" class="content">
-            <img src="../images/ilustrasi-rekam-medis.png" alt="" />
+            <img src="../../images/ilustrasi-rekam-medis.png" alt="" />
             <div class="deskripsi">
                 <h1>Selamat datang di #web-pribadi saya</h1>
                 <h2>Rekam Medis</h2>
